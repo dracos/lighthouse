@@ -35,7 +35,9 @@ describe('Viewer', () => {
     testHelpers.setupGlobals();
   });
 
-  it('constructor', () => {
+  afterEach(testHelpers.cleanupGlobals);
+
+  it('initializes properties and the DOM', () => {
     const uploader = new FileUploader();
 
     assert.ok(uploader.dropZone, 'page has dropzone element');
@@ -54,13 +56,19 @@ describe('Viewer', () => {
     uploader.fileInput.dispatchEvent(new window.CustomEvent('change'));
   });
 
-  it('document responds to drag and drop events', () => {
-    // TODO: test drop event on document. Callback is not getting called
-    // because jsdom doesn't support clipboard API: https://github.com/tmpvar/jsdom/issues/1568/.
-    const uploader = new FileUploader(_ => {
-      // assert.ok(true, 'file change callback is called');
-      // done();
+  // TODO: test drop event on document. Callback is not getting called
+  // because jsdom doesn't support clipboard API: https://github.com/tmpvar/jsdom/issues/1568/.
+  it.skip('document responds to drag and drop events', () => {
+    new FileUploader(_ => {
+      assert.ok(true, 'file change callback is called after drop event');
+      done();
     });
+
+    document.dispatchEvent(new window.CustomEvent('drop'));
+  });
+
+  it('document responds to drag and drop events', () => {
+    const uploader = new FileUploader();
 
     document.dispatchEvent(new window.CustomEvent('mouseleave'));
     assertUIReset(uploader);
@@ -68,8 +76,6 @@ describe('Viewer', () => {
     document.dispatchEvent(new window.CustomEvent('dragenter'));
     assert.ok(uploader.dropZone.classList.contains('dropping'));
     assert.ok(uploader._dragging);
-
-    document.dispatchEvent(new window.CustomEvent('drop'));
   });
 
   it('_resetDraggingUI()', () => {

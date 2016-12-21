@@ -26,16 +26,18 @@ const PAGE = fs.readFileSync(path.join(__dirname, '../app/index.html'), 'utf8');
 function setupGlobals() {
   global.document = jsdom.jsdom(PAGE);
   global.window = global.document.defaultView;
+}
 
-  Object.keys(window).forEach(key => {
-    if (!(key in global)) {
-      global[key] = window[key];
-    }
-  });
+function cleanupGlobals() {
+  global.document = undefined;
+  global.window = undefined;
 }
 
 // call before other src imports so DOM code that relies on `document` and
 // `window` have them defined.
 setupGlobals();
 
-exports.setupGlobals = setupGlobals;
+module.exports = {
+  setupGlobals,
+  cleanupGlobals
+};
