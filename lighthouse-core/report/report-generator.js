@@ -119,14 +119,25 @@ class ReportGenerator {
     Handlebars.registerHelper('sanitize', function(str, opts) {
       const isViewer = opts.data.root.reportContext === 'viewer';
 
-      const renderer = new marked.Renderer();
-      renderer.link = (href, title, text) => {
-        title = title || text;
-        return `<a href="${href}" target="_blank" rel="noopener" title="${title}">${text}</a>`;
-      };
+      // For viewer, sanitize the user's JSON input to mitigate against XSS.
+      // Define a renderer that only cares about transforming links and code
+      // snippets. Ignore everything else.
+      if (isViewer) {
+        const renderer = new marked.Renderer();
+        renderer.link = (href, title, text) => {
+          title = title || text;
+          return `<a href="${href}" target="_blank" rel="noopener" title="${title}">${text}</a>`;
+        };
+        renderer.codespan = function(str) {
+          return `<code>${str}</code>`;
+        };
+        // Nuke wrapper <p> tag that gets generated.
+        renderer.paragraph = function(str) {
+          return str;
+        };
 
-      str = Handlebars.Utils.escapeExpression(str);
-      str = marked.inlineLexer(str, [], {renderer, sanitize: true});
+        str = marked(str, {renderer, sanitize: true});
+      }
 
       return new Handlebars.SafeString(str);
     });
