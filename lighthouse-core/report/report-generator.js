@@ -137,7 +137,11 @@ class ReportGenerator {
         return str;
       };
 
-      str = marked(str, {renderer, sanitize: true});
+      try {
+        str = marked(str, {renderer, sanitize: true});
+      } catch (e) {
+        // Ignore fatal errors from marked js.
+      }
 
       // The input str has been santized and transformed. Mark it as safe so
       // handlebars renders the text as HTML.
