@@ -22,6 +22,7 @@ const Formatter = require('../formatters/formatter');
 const Handlebars = require('handlebars');
 const fs = require('fs');
 const path = require('path');
+const marked = require('marked');
 
 const RATINGS = {
   GOOD: {label: 'good', minScore: 75},
@@ -60,15 +61,6 @@ class ReportGenerator {
     // Converts a name to a link.
     Handlebars.registerHelper('nameToLink', name => {
       return name.toLowerCase().replace(/\s/, '-');
-    });
-
-    // Helper for either show an "✘" or "✔" booleans, or simply returning the
-    // value if it's of any other type.
-    Handlebars.registerHelper('getItemValue', value => {
-      if (typeof value === 'boolean') {
-        return value ? '&#10004;' : '&#10008;';
-      }
-      return value;
     });
 
     // Figures out the total score for an aggregation
@@ -122,6 +114,21 @@ class ReportGenerator {
         }
       }
       return arg;
+    });
+
+    Handlebars.registerHelper('sanitize', function(str, opts) {
+      const isViewer = opts.data.root.reportContext === 'viewer';
+
+      const renderer = new marked.Renderer();
+      renderer.link = (href, title, text) => {
+        title = title || text;
+        return `<a href="${href}" target="_blank" rel="noopener" title="${title}">${text}</a>`;
+      };
+
+      str = Handlebars.Utils.escapeExpression(str);
+      str = marked.inlineLexer(str, [], {renderer, sanitize: true});
+
+      return new Handlebars.SafeString(str);
     });
   }
 
