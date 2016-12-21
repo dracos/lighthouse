@@ -39,7 +39,9 @@ class ServiceWorker extends Audit {
       category: 'Offline',
       name: 'service-worker',
       description: 'Has a registered Service Worker',
-      helpText: 'The service worker is the technology that enables your app to use many Progressive Web App features, such as offline, add to homescreen, and push notifications. [Learn more](https://developers.google.com/web/tools/lighthouse/audits/registered-service-worker).',
+      helpText: 'The service worker is the technology that enables your app to use many ' +
+         'Progressive Web App features, such as offline, add to homescreen, and push ' +
+         'notifications. [Learn more](https://developers.google.com/web/tools/lighthouse/audits/registered-service-worker).',
       requiredArtifacts: ['URL', 'ServiceWorker']
     };
   }

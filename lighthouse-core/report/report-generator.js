@@ -116,29 +116,31 @@ class ReportGenerator {
       return arg;
     });
 
+    // eslint-disable-next-line no-unused-vars
     Handlebars.registerHelper('sanitize', function(str, opts) {
-      const isViewer = opts.data.root.reportContext === 'viewer';
+      // const isViewer = opts.data.root.reportContext === 'viewer';
 
-      // For viewer, sanitize the user's JSON input to mitigate against XSS.
-      // Define a renderer that only cares about transforming links and code
-      // snippets. Ignore everything else.
-      if (isViewer) {
-        const renderer = new marked.Renderer();
-        renderer.link = (href, title, text) => {
-          title = title || text;
-          return `<a href="${href}" target="_blank" rel="noopener" title="${title}">${text}</a>`;
-        };
-        renderer.codespan = function(str) {
-          return `<code>${str}</code>`;
-        };
-        // Nuke wrapper <p> tag that gets generated.
-        renderer.paragraph = function(str) {
-          return str;
-        };
+      // Allow the report to inject HTML, but sanitize it first.
+      // Viewer in particular, allows user's to upload JSON. To mitigate against
+      // XSS, define a renderer that only transforms links and code snippets.
+      // All other markdown ad HTML is ignored.
+      const renderer = new marked.Renderer();
+      renderer.link = (href, title, text) => {
+        title = title || text;
+        return `<a href="${href}" target="_blank" rel="noopener" title="${title}">${text}</a>`;
+      };
+      renderer.codespan = function(str) {
+        return `<code>${str}</code>`;
+      };
+      // Nuke wrapper <p> tag that gets generated.
+      renderer.paragraph = function(str) {
+        return str;
+      };
 
-        str = marked(str, {renderer, sanitize: true});
-      }
+      str = marked(str, {renderer, sanitize: true});
 
+      // The input str has been santized and transformed. Mark it as safe so
+      // handlebars renders the text as HTML.
       return new Handlebars.SafeString(str);
     });
   }
