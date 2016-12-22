@@ -48,7 +48,7 @@ describe('Viewer', () => {
     assert.deepEqual(uploader.fileInput, pageInput, 'constructor added hidden file input to page');
   });
 
-  it('hidden file input responds to change events', (done) => {
+  it('hidden file input responds to change events', done => {
     const uploader = new FileUploader(_ => {
       assert.ok(true, 'file change callback is called');
       done();
@@ -58,7 +58,7 @@ describe('Viewer', () => {
 
   // TODO: test drop event on document. Callback is not getting called
   // because jsdom doesn't support clipboard API: https://github.com/tmpvar/jsdom/issues/1568/.
-  it.skip('document responds to drag and drop events', () => {
+  it.skip('document responds to drag and drop events', done => {
     new FileUploader(_ => {
       assert.ok(true, 'file change callback is called after drop event');
       done();
