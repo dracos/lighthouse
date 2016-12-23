@@ -33,9 +33,16 @@ describe('Mobile-friendly: viewport audit', () => {
     }).rawValue, false);
   });
 
-  it('passes when a viewport is provided', () => {
-    return assert.equal(Audit.audit({
-      Viewport: 'width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1'
-    }).rawValue, true);
+  it('passes when a valid viewport is provided', () => {
+    const viewports = [
+      'width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1',
+      'width = device-width, initial-scale = 1',
+      'initial-scale=1',
+    ];
+    viewports.forEach(viewport => {
+      assert.equal(Audit.audit({
+        Viewport: viewport
+      }).rawValue, true);
+    });
   });
 });
