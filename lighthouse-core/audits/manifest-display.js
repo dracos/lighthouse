@@ -37,7 +37,8 @@ class ManifestDisplay extends Audit {
    * @return {boolean}
    */
   static hasRecommendedValue(val) {
-    return (val === 'fullscreen' || val === 'standalone' || val === 'browser');
+    return (val === 'fullscreen' || val === 'standalone' ||
+            val === 'browser' || val === 'minimal-ui');
   }
 
   /**
