@@ -24,7 +24,7 @@ describe('Mobile-friendly: viewport audit', () => {
   it('fails when no input present', () => {
     return assert.equal(Audit.audit({
       Viewport: -1
-    }).rawValue, false);
+    }).rawValue, -1);
   });
 
   it('fails when HTML does not contain a viewport meta tag', () => {
@@ -38,6 +38,7 @@ describe('Mobile-friendly: viewport audit', () => {
       'width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1',
       'width = device-width, initial-scale = 1',
       'initial-scale=1',
+      'width=device-width     ',
     ];
     viewports.forEach(viewport => {
       assert.equal(Audit.audit({

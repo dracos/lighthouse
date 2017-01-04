@@ -41,12 +41,35 @@ class Viewport extends Audit {
   static audit(artifacts) {
     if (typeof artifacts.Viewport !== 'string') {
       return Viewport.generateAuditResult({
-        rawValue: false
+        debugString: 'Error in determining viewport',
+        rawValue: -1
       });
     }
 
-    const viewportProps = Parser.parseMetaViewPortContent(artifacts.Viewport).validProperties;
-    const hasMobileViewport = viewportProps['width'] || viewportProps['initial-scale'];
+    let debugString = '';
+    const parsedProps = Parser.parseMetaViewPortContent(artifacts.Viewport);
+
+    if (Object.keys(parsedProps.unknownProperties).length) {
+      debugString += `Invalid properties found: ${parsedProps.unknownProperties}`;
+    }
+    if (Object.keys(parsedProps.invalidValues).length) {
+      debugString += `Invalid values found: ${parsedProps.invalidValues}`;
+    }
+
+    const viewportProps = parsedProps.validProperties;
+    const hasMobileViewport = viewportProps.width || viewportProps['initial-scale'];
+
+    Viewport.generateAuditResult({
+      rawValue: !!hasMobileViewport,
+      debugString
+    });
+
+    if (typeof artifacts.Viewport !== 'string') {
+      return Viewport.generateAuditResult({
+        debugString: 'Error in determining viewport',
+        rawValue: -1
+      });
+    }
 
     return Viewport.generateAuditResult({
       rawValue: !!hasMobileViewport
