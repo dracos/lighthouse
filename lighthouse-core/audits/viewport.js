@@ -59,20 +59,9 @@ class Viewport extends Audit {
     const viewportProps = parsedProps.validProperties;
     const hasMobileViewport = viewportProps.width || viewportProps['initial-scale'];
 
-    Viewport.generateAuditResult({
+    return Viewport.generateAuditResult({
       rawValue: !!hasMobileViewport,
       debugString
-    });
-
-    if (typeof artifacts.Viewport !== 'string') {
-      return Viewport.generateAuditResult({
-        debugString: 'Error in determining viewport',
-        rawValue: -1
-      });
-    }
-
-    return Viewport.generateAuditResult({
-      rawValue: !!hasMobileViewport
     });
   }
 }
