@@ -50,11 +50,12 @@ class Viewport extends Audit {
     const parsedProps = Parser.parseMetaViewPortContent(artifacts.Viewport);
 
     if (Object.keys(parsedProps.unknownProperties).length) {
-      debugString += `Invalid properties found: ${parsedProps.unknownProperties}`;
+      debugString += `Invalid properties found: ${parsedProps.unknownProperties}. `;
     }
     if (Object.keys(parsedProps.invalidValues).length) {
-      debugString += `Invalid values found: ${parsedProps.invalidValues}`;
+      debugString += `Invalid values found: ${parsedProps.invalidValues}. `;
     }
+    debugString = debugString.trim();
 
     const viewportProps = parsedProps.validProperties;
     const hasMobileViewport = viewportProps.width || viewportProps['initial-scale'];
